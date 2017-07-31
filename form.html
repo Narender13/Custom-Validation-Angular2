@@ -1,0 +1,214 @@
+<div class="row">
+  <div class="panel panel-default ">
+    <div class="panel panel-heading ">
+      <b>Model Driven Or Reactive Form</b>
+    </div>
+    <div class="panel-body">
+      <div class="col-sm-6 col-sm-offset-3">
+
+        <form [formGroup]="registerForm" novalidate>
+          <div class="form-group">
+            <label>Firstname:</label>
+            <input type="text" class="form-control" formControlName="firstname">
+            <small class="text-danger" [hidden]="registerForm.controls.firstname.valid || (registerForm.controls.firstname.pristine && !submitted)">
+        Firstname is required.
+    </small>
+          </div>
+          <div class="form-group">
+            <label>Lastname:</label>
+            <input type="text" class="form-control" formControlName="lastname">
+            <small class="text-danger" [hidden]="registerForm.controls.lastname.valid || (registerForm.controls.lastname.pristine && !submitted)">
+             Lastname is required.
+    </small>
+
+          </div>
+          <fieldset formGroupName="address">
+
+
+
+
+            <div class="form-group">
+              <label>Street:</label>
+              <input type="text" class="form-control" formControlName="street">
+              <small class="text-danger" [hidden]="registerForm.controls.address.controls.street.valid || (registerForm.controls.address.controls.street.pristine && !submitted)">
+             Street is required.
+    </small>
+            </div>
+            <div class="form-group">
+              <label>Zip:</label>
+              <input type="text" class="form-control" formControlName="zip">
+              <small class="text-danger" [hidden]="registerForm.controls.address.controls.zip.valid || (registerForm.controls.address.controls.zip.pristine && !submitted)">
+             Zip is required.
+    </small>
+            </div>
+            <div class="form-group">
+              <label>City:</label>
+              <input type="text" class="form-control" formControlName="city">
+              <small class="text-danger" [hidden]="registerForm.controls.address.controls.city.valid || (registerForm.controls.address.controls.city.pristine && !submitted)">
+             City is required.
+    </small>
+            </div>
+            <div class="form-group">
+              <label for="e-mail">E-Mail</label>
+              <input type="email" class="form-control" placeholder="E-mail" formControlName="email" required>
+              <div class="form-text error" *ngIf="registerForm.controls.address.controls.email.touched && !registerForm.controls.address.controls.email.valid">
+                <div class="text-danger" *ngIf="registerForm.controls.address.controls.email.hasError('required')">Email is required.</div>
+                <div class="text-danger" *ngIf="registerForm.controls.address.controls.email.hasError('invalidEmail')">Email is invalid.</div>
+              </div>
+            </div>
+          </fieldset>
+           <fieldset class="form-group">
+        <label for="password">Password</label>
+        <input type="password" class="form-control" placeholder="Password" minlength='6' formControlName="password">
+        <div class='form-text error' *ngIf="registerForm.controls.password.touched || submitted">
+          <div class="text-danger" *ngIf="registerForm.controls.password.hasError('required')">Password is required.</div>
+           <div class="text-danger" *ngIf="registerForm.controls.password.hasError('pattern')">Password must  be 6 to 20 characters which contain at least one numeric digit, one uppercase, and one lowercase letter.</div>
+        </div>
+      </fieldset>
+  
+      <fieldset class="form-group">
+        <label for="confirm-password">Confirm Password</label>
+        <input type="password" class="form-control" placeholder="Confirm Password" formControlName="confirmPassword">
+        <div class='form-text error' *ngIf="registerForm.controls.confirmPassword.touched || submitted">
+          <div class="text-danger" *ngIf="registerForm.hasError('mismatched')">Passwords do not match.</div>
+        </div>
+      </fieldset>
+          <button class="btn btn-success" (click)="save(registerForm.value, registerForm.valid)">Submit</button>
+        </form>
+      </div>
+
+      <div class="clearfix"></div>
+      <br><br>
+      <h2 class="text-center"><strong>Dynamic Form</strong></h2>
+      <div class="col-sm-6 col-sm-offset-3" style="margin-top:50px;">
+        <h4>Add Employee</h4>
+        <form [formGroup]="myForm" novalidate>
+          <!-- we will place our fields here -->
+
+          <!-- name -->
+          <div class="form-group">
+            <label>Name</label>
+            <input type="text" class="form-control" formControlName="name">
+            <!--display error message if name is not valid-->
+            <small class="text-danger" [hidden]="myForm.controls.name.valid || (myForm.controls.name.pristine && !usersubmitted)">
+             Name is required.
+    </small>
+          </div>
+
+          <!-- list of addresses -->
+
+          <div formArrayName="addresses">
+
+            <div *ngFor="let address of myForm.controls.addresses.controls; let i=index">
+              <div>
+                <div class="panel panel-default">
+                  <!-- address header, show remove button when more than one address available -->
+                  <div class="panel-heading">
+
+                    <span>Address {{i + 1}}</span>
+                    <span *ngIf="myForm.controls.addresses.controls.length > 1" (click)="removeAddress(i)">
+                 <button type="button" class="close"
+                    data-target="copyright-wrap"
+                    data-dismiss="panel">
+                <span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+                    </button>
+                    </span>
+
+                  </div>
+
+                  <!-- Angular assigns array index as group name by default 0, 1, 2, ... -->
+                  <div class="panel-body">
+                    <div [formGroupName]="i">
+                      <!--street-->
+                      <div class="form-group col-sm-6">
+                        <label>street</label>
+                        <input type="text" class="form-control" formControlName="street">
+                        <!--display error message if street is not valid-->
+
+                        <small class="text-danger" [hidden]="myForm.controls.addresses.controls[i].controls.street.valid || (myForm.controls.addresses.controls[i].controls.street.pristine && !usersubmitted)">
+                   Street is required.
+                   </small>
+                      </div>
+                      <!--postcode-->
+                      <div class="form-group col-sm-6">
+                        <label>Postcode</label>
+                        <input type="text" class="form-control" formControlName="postcode">
+                        <small class="text-danger" [hidden]="myForm.controls.addresses.controls[i].controls.postcode.valid || (myForm.controls.addresses.controls[i].controls.postcode.pristine && !usersubmitted)">
+                   Post code is required.
+                   </small>
+                      </div>
+                      <div class="form-group col-sm-6">
+                        <label>Phone</label>
+                        <input type="text" pattern="[0-9]*" minlength="10" maxlength="10" class="form-control" formControlName="phone">
+                        <small class="text-danger" [hidden]="myForm.controls.addresses.controls[i].controls.phone.valid || (myForm.controls.addresses.controls[i].controls.phone.pristine && !usersubmitted)">
+                     Mobile number should be only 10 digit nemuric value.
+                   </small>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+          <p><button class="btn btn-primary" (click)="addAddress()">Add another employee</button>
+            <p>
+
+              <div class="text-right"> <button data-loading-text="Loading..." class="btn btn-warning" (click)="userFormSave(myForm)">Submit</button></div>
+
+        </form>
+      </div>
+
+
+      <!-- app.component.html -->
+      <div class="clearfix"></div>
+      <br><br>
+      <h2 class="text-center"><strong>Template driven form</strong></h2>
+
+      <div class="col-sm-6 col-sm-offset-3">
+        <form #f="ngForm" novalidate (ngSubmit)="saveUser(f.value, f.valid)">
+          <!-- we will place our fields here -->
+
+          <!--name-->
+          <div class="form-group">
+            <label>Name</label>
+            <!--bind name to ngModel, it's required with minimum 5 characters-->
+            <input type="text" pattern="[A-Za-z]{10}" name="name" class="form-control" [(ngModel)]="user.name" #name="ngModel" minlength="5">
+            <!--show error only when field is not valid & it's dirty or form submited-->
+            <small class="text-danger" [hidden]="name.valid || (name.pristine && !f.submitted)">
+            Name not valid (minimum 5 characters,numeric value not allowed).
+        </small>
+
+          </div>
+
+          <!--adrress group-->
+          <div ngModelGroup="address">
+            <!--street-->
+            <div class="form-group">
+              <label>Street</label>
+              <input type="text" name="street" [class.haserror]="!street.valid && street.touched" class="text-danger" class="form-control"
+                [(ngModel)]="user.address.street" #street="ngModel" required>
+              <small [hidden]="street.valid || (street.pristine && !f.submitted)" class="text-danger">
+                Street is required.
+            </small>
+            </div>
+
+            <!--postcode-->
+            <div class="form-group">
+              <label>Post code</label>
+              <input type="text" class="form-control" name="postcode" [(ngModel)]="user.address.postcode" #postcode="ngModel" required>
+              <small [hidden]="postcode.valid || (postcode.pristine && !f.submitted)" class="text-danger">
+                Post code is required.
+            </small>
+            </div>
+          </div>
+
+          <button class="btn btn-success " type="submit">Submit</button>
+        </form>
+      </div>
+
+
+    </div>
+  </div>
+</div>
